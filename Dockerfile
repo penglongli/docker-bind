@@ -5,15 +5,17 @@ ARG BIND_SYSDIR=/etc/named
 ARG BIND_VERSION=9-12-2
 ARG BIND_VERSION_DOT=9.12.2
 
-COPY start.sh /
+COPY script/start.sh /
+COPY script/entrypoint.sh /
+COPY script/replace.sh /
 COPY named.conf ${BIND_SYSDIR}/named.conf.template
-COPY entrypoint.sh /entrypoint.sh
 COPY statistics.conf /statistics.conf
 
 # install bind9
 RUN yum install -y gcc make perl-devel openssl-devel mysql-devel libxml2-devel wget gettext sysvinit-tools  \
     && curl -L https://www.isc.org/downloads/file/bind-${BIND_VERSION}/?version=tar-gz -o /tmp/bind.tar.gz \
     && tar -zxvf /tmp/bind.tar.gz -C /tmp \
+    && /bin/bash /replace.sh /tmp/bind-${BIND_VERSION_DOT} \
     && cd /tmp/bind-${BIND_VERSION_DOT} \
     && ./configure --prefix=${BIND_PREFIX} --sysconfdir=${BIND_SYSDIR} --enable-threads --enable-epoll --disable-chroot --enable-backtrace --enable-largefile --disable-ipv6 --with-openssl  --with-libxml2 \
     && make && make install \
