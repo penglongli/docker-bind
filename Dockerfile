@@ -14,6 +14,7 @@ COPY statistics.conf /statistics.conf
 # install bind9
 RUN yum install -y gcc make perl-devel openssl-devel mysql-devel libxml2-devel wget gettext sysvinit-tools  \
     && curl -L https://www.isc.org/downloads/file/bind-${BIND_VERSION}/?version=tar-gz -o /tmp/bind.tar.gz \
+    && curl -L https://ftp.isc.org/isc/bind9/9.4.3-P5/bind-${BIND_VERSION_DOT}.tar.gz -o /tmp/bind.tar.gz \
     && tar -zxvf /tmp/bind.tar.gz -C /tmp \
     && /bin/bash /replace.sh /tmp/bind-${BIND_VERSION_DOT} \
     && cd /tmp/bind-${BIND_VERSION_DOT} \
